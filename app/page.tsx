@@ -1,17 +1,9 @@
 import Link from 'next/link';
+import { PageBackground } from '@/components/shared/PageBackground';
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen flex flex-col items-center overflow-x-hidden">
-      
-      {/* 1. Latar Belakang Liquid/Silky Folds */}
-      <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[10%] -left-[20%] w-[150%] h-[35%] bg-primary/15 blur-[120px] animate-[wave-drift-1_7s_ease-in-out_infinite]" />
-        <div className="absolute top-[35%] -right-[20%] w-[150%] h-[25%] bg-amber-600/10 blur-[100px] animate-[wave-drift-2_9s_ease-in-out_infinite]" />
-        <div className="absolute -bottom-[15%] -left-[10%] w-[120%] h-[30%] bg-primary/15 blur-[120px] animate-[wave-drift-3_11s_ease-in-out_infinite]" />
-        <div className="absolute inset-0 bg-background/20 mix-blend-overlay" />
-      </div>
-
+    <PageBackground mainClassName="flex flex-col items-center">
       {/* ================= HERO SECTION ================= */}
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center px-6 z-10 pt-20">
         <div className="text-center max-w-4xl flex flex-col items-center mt-12">
@@ -95,6 +87,6 @@ export default function Home() {
         </div>
       </section>
 
-    </main>
+    </PageBackground>
   );
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { sellerSchema, buyerSchema } from "@/lib/validations/onboarding";
+import { prisma } from "@/lib/prisma";
 
 export type OnboardingResult =
   | { status: "success"; message: string }
@@ -15,6 +16,8 @@ async function postToWebhook(url: string | undefined, payload: Record<string, un
     return;
   }
 
+  console.log(`[onboarding] POSTing ${label} payload to ${url}:`, JSON.stringify(payload, null, 2));
+
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -24,6 +27,8 @@ async function postToWebhook(url: string | undefined, payload: Record<string, un
   if (!res.ok) {
     throw new Error(`${label} webhook responded with ${res.status}`);
   }
+
+  console.log(`[onboarding] ${label} webhook responded with ${res.status}`);
 }
 
 export async function submitSellerListing(formData: FormData): Promise<OnboardingResult> {
@@ -47,15 +52,41 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
     };
   }
 
+  const { mrr, monthlyTraffic, monthlyRevenue, ...rest } = parsed.data;
+  const numericFields = {
+    mrr: mrr ? Number(mrr) : undefined,
+    monthlyTraffic: monthlyTraffic ? Number(monthlyTraffic) : undefined,
+    monthlyRevenue: monthlyRevenue ? Number(monthlyRevenue) : undefined,
+  };
+
+  // The database row is the source of truth for the listing, so it must
+  // succeed before we report success — a failed webhook afterwards shouldn't
+  // undo or hide a submission that was already safely persisted.
+  try {
+    await prisma.listing.create({
+      data: {
+        category: rest.category,
+        repositoryLink: rest.repositoryLink,
+        techStack: rest.techStack,
+        assetUrl: rest.assetUrl,
+        avgWatchTime: rest.avgWatchTime,
+        fileNames: rest.fileNames ?? [],
+        ...numericFields,
+      },
+    });
+  } catch (error) {
+    console.error("[onboarding] failed to save listing to database:", error);
+    return { status: "error", message: "Gagal menyimpan listing ke database. Silakan coba lagi." };
+  }
+
   try {
     await postToWebhook(
       SELLER_WEBHOOK_URL,
-      { ...parsed.data, submittedAt: new Date().toISOString(), source: "onboarding-seller" },
+      { ...rest, ...numericFields, submittedAt: new Date().toISOString(), source: "onboarding-seller" },
       "seller"
     );
   } catch (error) {
-    console.error(error);
-    return { status: "error", message: "Gagal mengirim listing. Silakan coba lagi dalam beberapa saat." };
+    console.error("[onboarding] seller webhook failed (listing was still saved to the database):", error);
   }
 
   return {
