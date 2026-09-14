@@ -61,3 +61,16 @@ model BuyerLead {
 
   @@map("buyer_leads")
 }
+
+// Dedup record for the Gatekeeper: one row per (listing, buyerLead) pair
+// that has already been matched/notified, so re-running the matcher (or a
+// listing somehow being re-approved) never sends a duplicate notification.
+model MatchNotification {
+  id          String   @id @default(cuid())
+  listingId   String
+  buyerLeadId String
+  createdAt   DateTime @default(now())
+
+  @@unique([listingId, buyerLeadId])
+  @@map("match_notifications")
+}
