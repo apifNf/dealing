@@ -7,8 +7,12 @@ import { BuyerWizard } from "./BuyerWizard";
 
 export type OnboardingIntent = "sell" | "buy";
 
-export function OnboardingFlow() {
-  const [intent, setIntent] = useState<OnboardingIntent | null>(null);
+type OnboardingFlowProps = {
+  initialIntent?: OnboardingIntent | null;
+};
+
+export function OnboardingFlow({ initialIntent = null }: OnboardingFlowProps) {
+  const [intent, setIntent] = useState<OnboardingIntent | null>(initialIntent);
 
   return (
     <div className="flex min-h-[80vh] w-full items-center justify-center px-4 py-16">

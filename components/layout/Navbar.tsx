@@ -58,8 +58,8 @@ export const Navbar = () => {
         
         {/* Menu Navigasi Tengah */}
         <div className="hidden md:flex space-x-6 text-xs font-medium text-textMuted mx-4">
-          <Link href="/onboarding" className="hover:text-textMain transition-colors">Browse</Link>
-          <Link href="/onboarding" className="hover:text-textMain transition-colors">List Business</Link>
+          <Link href="/browse" className="hover:text-textMain transition-colors">Browse</Link>
+          <Link href="/onboarding?intent=sell" className="hover:text-textMain transition-colors">List Business</Link>
           <Link href="/admin/dashboard" className="hover:text-textMain transition-colors">Admin</Link>
         </div>
 

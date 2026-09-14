@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight, Rocket, TrendingUp } from "lucide-react";
 import type { OnboardingIntent } from "./OnboardingFlow";
 
@@ -44,9 +45,8 @@ export function IntentStep({ onSelect }: IntentStepProps) {
           </div>
         </button>
 
-        <button
-          type="button"
-          onClick={() => onSelect("buy")}
+        <Link
+          href="/browse"
           className="group relative overflow-hidden rounded-3xl border border-white/10 bg-surfaceGlass p-10 text-left backdrop-blur-xl transition-all duration-500 hover:border-primary/50 hover:bg-white/[0.04] hover:shadow-[0_0_60px_rgba(194,65,12,0.2)]"
         >
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
@@ -64,7 +64,7 @@ export function IntentStep({ onSelect }: IntentStepProps) {
               </p>
             </div>
           </div>
-        </button>
+        </Link>
       </div>
     </div>
   );
