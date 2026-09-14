@@ -44,6 +44,13 @@ export function SellerWizard({ onExit }: SellerWizardProps) {
       avgWatchTime: "",
       monthlyTraffic: undefined,
       monthlyRevenue: undefined,
+      platformName: "",
+      subscriberCount: undefined,
+      openRate: undefined,
+      niche: "",
+      storeName: "",
+      skuCount: undefined,
+      reasonForSelling: "",
       fileNames: [],
     },
   });

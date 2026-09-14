@@ -10,6 +10,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   content: "Content Account",
   website: "Website / Media",
   saas: "SaaS / Micro-Tools",
+  newsletter: "Newsletter & Komunitas",
+  ecommerce: "E-Commerce & Toko Digital",
 };
 
 function formatRupiah(value: number | null) {
@@ -62,7 +64,7 @@ export function ListingsTable({ listings }: ListingsTableProps) {
         <tbody>
           {listings.map((listing) => {
             const isRowPending = isPending && pendingId === listing.id;
-            const detail = listing.repositoryLink || listing.assetUrl || "-";
+            const detail = listing.repositoryLink || listing.assetUrl || listing.storeName || listing.platformName || "-";
             const revenue = listing.mrr ?? listing.monthlyRevenue ?? null;
 
             return (

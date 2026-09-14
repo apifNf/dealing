@@ -16,9 +16,19 @@ export const ASSET_CATEGORIES = [
     label: "SaaS / Micro-Tools",
     description: "Aplikasi berlangganan, tools, atau produk digital berbasis kode.",
   },
+  {
+    value: "newsletter",
+    label: "Newsletter & Komunitas",
+    description: "Publikasi Substack/Beehiiv, grup premium, atau komunitas berbayar.",
+  },
+  {
+    value: "ecommerce",
+    label: "E-Commerce & Toko Digital",
+    description: "Toko marketplace, penjualan produk digital, atau brand D2C.",
+  },
 ] as const;
 
-export const assetCategoryEnum = z.enum(["content", "website", "saas"]);
+export const assetCategoryEnum = z.enum(["content", "website", "saas", "newsletter", "ecommerce"]);
 export type AssetCategory = z.infer<typeof assetCategoryEnum>;
 
 export const BUDGET_RANGES = [
@@ -67,16 +77,34 @@ export const sellerSchema = z
     avgWatchTime: z.string().optional(),
     monthlyTraffic: z.string().optional(),
     monthlyRevenue: z.string().optional(),
+    // Phase 2 — Newsletter & Komunitas
+    platformName: z.string().optional(),
+    subscriberCount: z.string().optional(),
+    openRate: z.string().optional(),
+    niche: z.string().optional(),
+    // Phase 2 — E-Commerce & Toko Digital
+    storeName: z.string().optional(),
+    skuCount: z.string().optional(),
+    // Phase 2 — Newsletter & E-Commerce share this
+    reasonForSelling: z.string().optional(),
     // Phase 3 — analytics screenshots (names only, UI placeholder)
     fileNames: z.array(z.string()).optional(),
   })
   .superRefine((data, ctx) => {
-    const requireText = (value: string | undefined, field: "repositoryLink" | "techStack" | "assetUrl" | "avgWatchTime", message: string) => {
+    const requireText = (
+      value: string | undefined,
+      field: "repositoryLink" | "techStack" | "assetUrl" | "avgWatchTime" | "platformName" | "niche" | "storeName" | "reasonForSelling",
+      message: string
+    ) => {
       if (!value || value.trim().length === 0) {
         ctx.addIssue({ code: "custom", message, path: [field] });
       }
     };
-    const requireNumericText = (value: string | undefined, field: "mrr" | "monthlyTraffic" | "monthlyRevenue", message: string) => {
+    const requireNumericText = (
+      value: string | undefined,
+      field: "mrr" | "monthlyTraffic" | "monthlyRevenue" | "subscriberCount" | "openRate" | "skuCount",
+      message: string
+    ) => {
       if (!isValidNonNegativeNumber(value)) {
         ctx.addIssue({ code: "custom", message, path: [field] });
       }
@@ -114,13 +142,45 @@ export const sellerSchema = z
     if (data.category === "website") {
       requireNumericText(data.monthlyTraffic, "monthlyTraffic", "Traffic bulanan wajib diisi dengan angka yang valid");
     }
+
+    if (data.category === "newsletter") {
+      requireText(data.platformName, "platformName", "Nama platform wajib diisi");
+      requireNumericText(data.subscriberCount, "subscriberCount", "Jumlah subscriber wajib diisi dengan angka yang valid");
+      requireNumericText(data.openRate, "openRate", "Rata-rata open rate wajib diisi dengan angka yang valid");
+      requireText(data.niche, "niche", "Niche/topik wajib diisi");
+      requireText(data.reasonForSelling, "reasonForSelling", "Alasan jual wajib diisi");
+    }
+
+    if (data.category === "ecommerce") {
+      requireText(data.storeName, "storeName", "Nama toko wajib diisi");
+      requireText(data.platformName, "platformName", "Platform wajib diisi");
+      requireNumericText(data.monthlyRevenue, "monthlyRevenue", "Revenue bulanan wajib diisi dengan angka yang valid");
+      requireNumericText(data.skuCount, "skuCount", "Jumlah SKU/produk wajib diisi dengan angka yang valid");
+      requireNumericText(data.monthlyTraffic, "monthlyTraffic", "Traffic bulanan wajib diisi dengan angka yang valid");
+      requireText(data.reasonForSelling, "reasonForSelling", "Alasan jual wajib diisi");
+    }
   });
 
 export type SellerFormValues = z.infer<typeof sellerSchema>;
 
 export const SELLER_STEP_FIELDS = {
   category: ["category"],
-  details: ["repositoryLink", "mrr", "techStack", "assetUrl", "avgWatchTime", "monthlyTraffic", "monthlyRevenue"],
+  details: [
+    "repositoryLink",
+    "mrr",
+    "techStack",
+    "assetUrl",
+    "avgWatchTime",
+    "monthlyTraffic",
+    "monthlyRevenue",
+    "platformName",
+    "subscriberCount",
+    "openRate",
+    "niche",
+    "storeName",
+    "skuCount",
+    "reasonForSelling",
+  ],
   upload: ["fileNames"],
 } as const satisfies Record<string, (keyof SellerFormValues)[]>;
 

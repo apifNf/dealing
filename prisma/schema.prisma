@@ -24,19 +24,27 @@ enum ListingStatus {
 // All of them are nullable so a single row shape can store any category
 // without losing data for the other two.
 model Listing {
-  id             String        @id @default(cuid())
-  category       String
-  repositoryLink String?
-  mrr            Float?
-  techStack      String?
-  assetUrl       String?
-  avgWatchTime   String?
-  monthlyTraffic Float?
-  monthlyRevenue Float?
-  fileNames      String[]      @default([])
-  status         ListingStatus @default(PENDING)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id               String        @id @default(cuid())
+  category         String
+  repositoryLink   String?
+  mrr              Float?
+  techStack        String?
+  assetUrl         String?
+  avgWatchTime     String?
+  monthlyTraffic   Float?
+  monthlyRevenue   Float?
+  // Newsletter & Komunitas / E-Commerce & Toko Digital
+  platformName     String?
+  subscriberCount  Float?
+  openRate         Float?
+  niche            String?
+  storeName        String?
+  skuCount         Float?
+  reasonForSelling String?
+  fileNames        String[]      @default([])
+  status           ListingStatus @default(PENDING)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
   @@map("listings")
 }

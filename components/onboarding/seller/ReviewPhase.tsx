@@ -50,6 +50,24 @@ export function ReviewPhase({ form, fileCount, isPending, result, onSubmit }: Re
       label: values.category === "content" ? "AdSense/Sponsorship" : "Revenue Bulanan",
       value: formatRupiah(values.monthlyRevenue),
     });
+  } else if (values.category === "newsletter") {
+    summaryRows.push(
+      { label: "Platform", value: values.platformName || "-" },
+      { label: "Subscriber", value: formatNumber(values.subscriberCount) },
+      { label: "Open Rate", value: values.openRate ? `${values.openRate}%` : "-" },
+      { label: "Niche", value: values.niche || "-" },
+      { label: "MRR", value: formatRupiah(values.mrr) },
+      { label: "Alasan Jual", value: values.reasonForSelling || "-" }
+    );
+  } else if (values.category === "ecommerce") {
+    summaryRows.push(
+      { label: "Nama Toko", value: values.storeName || "-" },
+      { label: "Platform", value: values.platformName || "-" },
+      { label: "Revenue Bulanan", value: formatRupiah(values.monthlyRevenue) },
+      { label: "Jumlah SKU", value: formatNumber(values.skuCount) },
+      { label: "Traffic Bulanan", value: formatNumber(values.monthlyTraffic) },
+      { label: "Alasan Jual", value: values.reasonForSelling || "-" }
+    );
   }
 
   summaryRows.push({ label: "Dokumen Terlampir", value: fileCount > 0 ? `${fileCount} file` : "Belum ada" });

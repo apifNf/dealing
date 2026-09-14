@@ -41,6 +41,13 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
     avgWatchTime: formData.get("avgWatchTime") || undefined,
     monthlyTraffic: formData.get("monthlyTraffic") || undefined,
     monthlyRevenue: formData.get("monthlyRevenue") || undefined,
+    platformName: formData.get("platformName") || undefined,
+    subscriberCount: formData.get("subscriberCount") || undefined,
+    openRate: formData.get("openRate") || undefined,
+    niche: formData.get("niche") || undefined,
+    storeName: formData.get("storeName") || undefined,
+    skuCount: formData.get("skuCount") || undefined,
+    reasonForSelling: formData.get("reasonForSelling") || undefined,
     fileNames: formData.getAll("fileNames").map(String),
   });
 
@@ -52,11 +59,14 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
     };
   }
 
-  const { mrr, monthlyTraffic, monthlyRevenue, ...rest } = parsed.data;
+  const { mrr, monthlyTraffic, monthlyRevenue, subscriberCount, openRate, skuCount, ...rest } = parsed.data;
   const numericFields = {
     mrr: mrr ? Number(mrr) : undefined,
     monthlyTraffic: monthlyTraffic ? Number(monthlyTraffic) : undefined,
     monthlyRevenue: monthlyRevenue ? Number(monthlyRevenue) : undefined,
+    subscriberCount: subscriberCount ? Number(subscriberCount) : undefined,
+    openRate: openRate ? Number(openRate) : undefined,
+    skuCount: skuCount ? Number(skuCount) : undefined,
   };
 
   // The database row is the source of truth for the listing, so it must
@@ -70,6 +80,10 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
         techStack: rest.techStack,
         assetUrl: rest.assetUrl,
         avgWatchTime: rest.avgWatchTime,
+        platformName: rest.platformName,
+        niche: rest.niche,
+        storeName: rest.storeName,
+        reasonForSelling: rest.reasonForSelling,
         fileNames: rest.fileNames ?? [],
         ...numericFields,
       },

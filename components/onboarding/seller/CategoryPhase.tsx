@@ -1,4 +1,4 @@
-import { Code2, Globe, Video } from "lucide-react";
+import { Code2, Globe, Mail, ShoppingBag, Video } from "lucide-react";
 import type { UseFormReturn } from "react-hook-form";
 import { ASSET_CATEGORIES, type SellerFormValues } from "@/lib/validations/onboarding";
 import { SelectableCard } from "../shared/fields/SelectableCard";
@@ -7,6 +7,8 @@ const CATEGORY_ICONS = {
   content: Video,
   website: Globe,
   saas: Code2,
+  newsletter: Mail,
+  ecommerce: ShoppingBag,
 } as const;
 
 type CategoryPhaseProps = {

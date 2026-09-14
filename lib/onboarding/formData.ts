@@ -10,6 +10,13 @@ export function buildSellerFormData(data: SellerFormValues): FormData {
   if (data.avgWatchTime) formData.set("avgWatchTime", data.avgWatchTime);
   if (data.monthlyTraffic) formData.set("monthlyTraffic", data.monthlyTraffic);
   if (data.monthlyRevenue) formData.set("monthlyRevenue", data.monthlyRevenue);
+  if (data.platformName) formData.set("platformName", data.platformName);
+  if (data.subscriberCount) formData.set("subscriberCount", data.subscriberCount);
+  if (data.openRate) formData.set("openRate", data.openRate);
+  if (data.niche) formData.set("niche", data.niche);
+  if (data.storeName) formData.set("storeName", data.storeName);
+  if (data.skuCount) formData.set("skuCount", data.skuCount);
+  if (data.reasonForSelling) formData.set("reasonForSelling", data.reasonForSelling);
   data.fileNames?.forEach((name) => formData.append("fileNames", name));
   return formData;
 }
