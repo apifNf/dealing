@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { sellerSchema, buyerSchema } from "@/lib/validations/onboarding";
 import { prisma } from "@/lib/prisma";
 
@@ -113,6 +114,7 @@ export async function submitBuyerInterest(formData: FormData): Promise<Onboardin
   const parsed = buyerSchema.safeParse({
     budgetRange: formData.get("budgetRange") || undefined,
     categoriesOfInterest: formData.getAll("categoriesOfInterest").map(String),
+    contactInfo: formData.get("contactInfo") || undefined,
   });
 
   if (!parsed.success) {
@@ -123,6 +125,22 @@ export async function submitBuyerInterest(formData: FormData): Promise<Onboardin
     };
   }
 
+  // Same pattern as submitSellerListing: the DB row is the source of truth
+  // and must succeed before we redirect — a failed webhook afterwards
+  // shouldn't lose a lead that was already safely captured.
+  try {
+    await prisma.buyerLead.create({
+      data: {
+        budgetRange: parsed.data.budgetRange,
+        categoriesOfInterest: parsed.data.categoriesOfInterest,
+        contactInfo: parsed.data.contactInfo,
+      },
+    });
+  } catch (error) {
+    console.error("[onboarding] failed to save buyer lead to database:", error);
+    return { status: "error", message: "Gagal menyimpan preferensi Anda. Silakan coba lagi." };
+  }
+
   try {
     await postToWebhook(
       BUYER_WEBHOOK_URL,
@@ -130,12 +148,9 @@ export async function submitBuyerInterest(formData: FormData): Promise<Onboardin
       "buyer"
     );
   } catch (error) {
-    console.error(error);
-    return { status: "error", message: "Gagal mengirim preferensi Anda. Silakan coba lagi." };
+    console.error("[onboarding] buyer webhook failed (lead was still saved to the database):", error);
   }
 
-  return {
-    status: "success",
-    message: "Preferensi investasi tersimpan! Kami akan mengirimkan deal flow yang relevan untuk Anda.",
-  };
+  const categoriesParam = parsed.data.categoriesOfInterest.join(",");
+  redirect(`/browse?categories=${encodeURIComponent(categoriesParam)}`);
 }

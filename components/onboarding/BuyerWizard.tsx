@@ -9,6 +9,7 @@ import { submitBuyerInterest, type OnboardingResult } from "@/app/onboarding/act
 import { buildBuyerFormData } from "@/lib/onboarding/formData";
 import { WizardShell } from "./shared/WizardShell";
 import { GlassField } from "./shared/fields/GlassField";
+import { GlassInput } from "./shared/fields/GlassInput";
 import { GlassSelect } from "./shared/fields/GlassSelect";
 import { ToggleChip } from "./shared/fields/ToggleChip";
 import { SubmitStatus } from "./shared/SubmitStatus";
@@ -27,6 +28,7 @@ export function BuyerWizard({ onExit }: BuyerWizardProps) {
     defaultValues: {
       budgetRange: "" as BuyerFormValues["budgetRange"],
       categoriesOfInterest: [],
+      contactInfo: "",
     },
   });
 
@@ -82,6 +84,21 @@ export function BuyerWizard({ onExit }: BuyerWizardProps) {
               />
             ))}
           </div>
+        </GlassField>
+
+        <GlassField
+          label="Email atau Nomor WA/Telegram"
+          htmlFor="contactInfo"
+          error={formState.errors.contactInfo?.message}
+          hint="Supaya tim DEALING bisa menghubungkan Anda dengan penjual yang relevan"
+        >
+          <GlassInput
+            id="contactInfo"
+            type="text"
+            placeholder="nama@email.com atau +62812xxxxxxx"
+            invalid={!!formState.errors.contactInfo}
+            {...register("contactInfo")}
+          />
         </GlassField>
 
         {result && <SubmitStatus status={result.status === "success" ? "success" : "error"} message={result.message} />}

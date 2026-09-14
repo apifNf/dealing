@@ -34,10 +34,12 @@ export type AssetCategory = z.infer<typeof assetCategoryEnum>;
 export const BUDGET_RANGES = [
   { value: "10-50", label: "Rp10 Juta - Rp50 Juta" },
   { value: "50-100", label: "Rp50 Juta - Rp100 Juta" },
-  { value: "100-plus", label: "> Rp100 Juta" },
+  { value: "100-500", label: "Rp100 Juta - Rp500 Juta" },
+  { value: "500-1000", label: "Rp500 Juta - Rp1 Miliar" },
+  { value: "1000-plus", label: "> Rp1 Miliar" },
 ] as const;
 
-export const budgetRangeEnum = z.enum(["10-50", "50-100", "100-plus"], {
+export const budgetRangeEnum = z.enum(["10-50", "50-100", "100-500", "500-1000", "1000-plus"], {
   error: "Pilih rentang budget untuk melanjutkan",
 });
 export type BudgetRange = z.infer<typeof budgetRangeEnum>;
@@ -184,9 +186,26 @@ export const SELLER_STEP_FIELDS = {
   upload: ["fileNames"],
 } as const satisfies Record<string, (keyof SellerFormValues)[]>;
 
-export const buyerSchema = z.object({
-  budgetRange: budgetRangeEnum,
-  categoriesOfInterest: z.array(assetCategoryEnum).min(1, "Pilih minimal satu kategori yang diminati"),
-});
+function isContactInfoValid(value: string) {
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const isPhoneOrHandle = /^[+\d][\d\s-]{6,}$/.test(value);
+  return isEmail || isPhoneOrHandle;
+}
+
+export const buyerSchema = z
+  .object({
+    budgetRange: budgetRangeEnum,
+    categoriesOfInterest: z.array(assetCategoryEnum).min(1, "Pilih minimal satu kategori yang diminati"),
+    contactInfo: z.string().min(5, "Masukkan email atau nomor WA/Telegram Anda"),
+  })
+  .superRefine((data, ctx) => {
+    if (!isContactInfoValid(data.contactInfo)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Masukkan email atau nomor WA/Telegram yang valid",
+        path: ["contactInfo"],
+      });
+    }
+  });
 
 export type BuyerFormValues = z.infer<typeof buyerSchema>;

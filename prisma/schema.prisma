@@ -48,3 +48,16 @@ model Listing {
 
   @@map("listings")
 }
+
+// Captured from the "Preferensi Akuisisi Anda" step (Saya Ingin Mengakuisisi
+// -> BuyerWizard). Kept as its own model, separate from Listing, since a
+// buyer lead isn't tied to one specific listing.
+model BuyerLead {
+  id                   String   @id @default(cuid())
+  budgetRange          String
+  categoriesOfInterest String[]
+  contactInfo          String
+  createdAt            DateTime @default(now())
+
+  @@map("buyer_leads")
+}

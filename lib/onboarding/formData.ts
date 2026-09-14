@@ -24,6 +24,7 @@ export function buildSellerFormData(data: SellerFormValues): FormData {
 export function buildBuyerFormData(data: BuyerFormValues): FormData {
   const formData = new FormData();
   formData.set("budgetRange", data.budgetRange);
+  formData.set("contactInfo", data.contactInfo);
   data.categoriesOfInterest.forEach((category) => formData.append("categoriesOfInterest", category));
   return formData;
 }
