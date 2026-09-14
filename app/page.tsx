@@ -24,9 +24,12 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <button className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-neutral-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+            <Link
+              href="/onboarding"
+              className="px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-neutral-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            >
               Gabung DEALING Sekarang
-            </button>
+            </Link>
           </div>
         </div>
       </section>

@@ -58,19 +58,25 @@ export const Navbar = () => {
         
         {/* Menu Navigasi Tengah */}
         <div className="hidden md:flex space-x-6 text-xs font-medium text-textMuted mx-4">
-          <Link href="/browse" className="hover:text-textMain transition-colors">Browse</Link>
-          <Link href="/sell" className="hover:text-textMain transition-colors">List Business</Link>
-          <Link href="/pricing" className="hover:text-textMain transition-colors">Membership</Link>
+          <Link href="/onboarding" className="hover:text-textMain transition-colors">Browse</Link>
+          <Link href="/onboarding" className="hover:text-textMain transition-colors">List Business</Link>
+          <Link href="/admin/dashboard" className="hover:text-textMain transition-colors">Admin</Link>
         </div>
-        
+
         {/* Tombol Aksi Kanan */}
         <div className="flex items-center space-x-2">
-          <button className="text-xs md:text-sm font-medium text-textMuted hover:text-textMain px-3 py-1.5 transition-all">
+          <Link
+            href="/onboarding"
+            className="text-xs md:text-sm font-medium text-textMuted hover:text-textMain px-3 py-1.5 transition-all"
+          >
             Masuk
-          </button>
-          <button className="px-4 py-1.5 bg-gradient-to-r from-primary to-orange-600 text-white text-xs md:text-sm font-semibold rounded-full hover:opacity-90 transition-all shadow-[0_0_15px_rgba(194,65,12,0.3)] whitespace-nowrap">
+          </Link>
+          <Link
+            href="/onboarding"
+            className="px-4 py-1.5 bg-gradient-to-r from-primary to-orange-600 text-white text-xs md:text-sm font-semibold rounded-full hover:opacity-90 transition-all shadow-[0_0_15px_rgba(194,65,12,0.3)] whitespace-nowrap"
+          >
             Gabung
-          </button>
+          </Link>
         </div>
       </nav>
     </header>
