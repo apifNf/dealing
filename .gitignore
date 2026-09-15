@@ -34,6 +34,10 @@ yarn-error.log*
 .env*
 !.env.example
 
+# fallback log for password-reset links when RESEND_API_KEY isn't set yet
+# (see lib/email/sendResetEmail.ts) — dev/testing artifact, never commit.
+/reset-links.log
+
 # vercel
 .vercel
 

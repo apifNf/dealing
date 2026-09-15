@@ -45,8 +45,8 @@ export function DropzoneUpload({ value, onChange }: DropzoneUploadProps) {
         }}
         className={`
           flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed
-          px-6 py-12 text-center backdrop-blur-xl transition-all duration-300
-          ${isDragging ? "border-primary/70 bg-primary/[0.06]" : "border-white/15 bg-white/[0.02] hover:border-white/30"}
+          px-6 py-12 text-center backdrop-blur-2xl transition-all duration-300
+          ${isDragging ? "border-primary/70 bg-primary/[0.06]" : "border-white/15 bg-white/[0.015] hover:border-white/30"}
         `}
       >
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -73,7 +73,7 @@ export function DropzoneUpload({ value, onChange }: DropzoneUploadProps) {
           {value.map((file, index) => (
             <li
               key={`${file.name}-${index}`}
-              className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 backdrop-blur-2xl"
             >
               <div className="flex items-center gap-3 overflow-hidden">
                 <FileImage className="h-4 w-4 shrink-0 text-primary" />

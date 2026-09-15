@@ -3,8 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { LogOut } from 'lucide-react';
 
-export const Navbar = () => {
+type NavbarUser = { email: string } | null;
+
+type NavbarProps = {
+  user: NavbarUser;
+};
+
+function shortLabel(email: string): string {
+  const local = email.split('@')[0] ?? email;
+  return local.length > 16 ? `${local.slice(0, 16)}…` : local;
+}
+
+export const Navbar = ({ user }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -65,12 +77,28 @@ export const Navbar = () => {
 
         {/* Tombol Aksi Kanan */}
         <div className="flex items-center space-x-2">
-          <Link
-            href="/onboarding"
-            className="text-xs md:text-sm font-medium text-textMuted hover:text-textMain px-3 py-1.5 transition-all"
-          >
-            Masuk
-          </Link>
+          {user ? (
+            <>
+              <span className="hidden text-xs font-medium text-textMuted sm:inline md:text-sm" title={user.email}>
+                {shortLabel(user.email)}
+              </span>
+              <Link
+                href="/logout"
+                prefetch={false}
+                className="flex items-center gap-1.5 text-xs md:text-sm font-medium text-textMuted hover:text-textMain px-3 py-1.5 transition-all"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Logout
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/onboarding"
+              className="text-xs md:text-sm font-medium text-textMuted hover:text-textMain px-3 py-1.5 transition-all"
+            >
+              Masuk
+            </Link>
+          )}
           <Link
             href="/onboarding"
             className="px-4 py-1.5 bg-gradient-to-r from-primary to-orange-600 text-white text-xs md:text-sm font-semibold rounded-full hover:opacity-90 transition-all shadow-[0_0_15px_rgba(194,65,12,0.3)] whitespace-nowrap"

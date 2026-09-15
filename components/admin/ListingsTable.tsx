@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader2, Megaphone, X } from "lucide-react";
 import type { Listing } from "@/generated/prisma/client";
-import { approveListing, rejectListing } from "@/app/admin/dashboard/actions";
+import { approveListing, rejectListing, shareListingToMembership } from "@/app/admin/dashboard/actions";
 import { StatusBadge } from "./StatusBadge";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -101,6 +101,26 @@ export function ListingsTable({ listings }: ListingsTableProps) {
                       {isRowPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
                       Reject
                     </button>
+                    {listing.status !== "REJECTED" && (
+                      <button
+                        type="button"
+                        disabled={isRowPending || !!listing.sharedToMembershipAt}
+                        onClick={() => handleAction(listing.id, shareListingToMembership)}
+                        title={
+                          listing.sharedToMembershipAt
+                            ? `Sudah di-share ${formatDate(listing.sharedToMembershipAt)}`
+                            : "Broadcast listing ini ke member approved"
+                        }
+                        className="flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {isRowPending ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Megaphone className="h-3.5 w-3.5" />
+                        )}
+                        {listing.sharedToMembershipAt ? "Sudah Di-share" : "Share ke Membership"}
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

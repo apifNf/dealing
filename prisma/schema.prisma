@@ -18,35 +18,86 @@ enum ListingStatus {
   REJECTED
 }
 
+// End-user account (buyer or seller) — separate from the admin passcode auth
+// in lib/adminAuth.ts. Gates the onboarding submission flow (see proxy.ts).
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  resetTokens PasswordResetToken[]
+  listings    Listing[]
+  buyerLeads  BuyerLead[]
+
+  @@map("users")
+}
+
+// One row per forgot-password request; tokens are single-use (usedAt) and
+// expire after 1 hour (see lib/passwordReset.ts). Kept separate from User so
+// multiple outstanding requests never clobber each other.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("password_reset_tokens")
+}
+
 // `repositoryLink` / `mrr` / `techStack` only apply to the SaaS category;
 // `assetUrl` / `avgWatchTime` / `monthlyTraffic` / `monthlyRevenue` cover
 // Content Account and Website/Media instead (see lib/validations/onboarding.ts).
 // All of them are nullable so a single row shape can store any category
 // without losing data for the other two.
 model Listing {
-  id               String        @id @default(cuid())
-  category         String
-  repositoryLink   String?
-  mrr              Float?
-  techStack        String?
-  assetUrl         String?
-  avgWatchTime     String?
-  monthlyTraffic   Float?
-  monthlyRevenue   Float?
+  id                   String        @id @default(cuid())
+  category             String
+  repositoryLink       String?
+  mrr                  Float?
+  techStack            String?
+  assetUrl             String?
+  avgWatchTime         String?
+  monthlyTraffic       Float?
+  monthlyRevenue       Float?
   // Newsletter & Komunitas / E-Commerce & Toko Digital
-  platformName     String?
-  subscriberCount  Float?
-  openRate         Float?
-  niche            String?
-  storeName        String?
-  skuCount         Float?
-  reasonForSelling String?
-  fileNames        String[]      @default([])
-  status           ListingStatus @default(PENDING)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  platformName         String?
+  subscriberCount      Float?
+  openRate             Float?
+  niche                String?
+  storeName            String?
+  skuCount             Float?
+  reasonForSelling     String?
+  fileNames            String[]      @default([])
+  status               ListingStatus @default(PENDING)
+  // Set when an admin clicks "Share ke Membership" — a deliberate, manual,
+  // per-listing decision (see components/admin/ListingsTable.tsx), not
+  // something every APPROVED listing gets automatically.
+  sharedToMembershipAt DateTime?
+  // Recorded when the submitter is logged in; not required to submit.
+  userId               String?
+  user                 User?         @relation(fields: [userId], references: [id])
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 
   @@map("listings")
+}
+
+// Membership applications (see app/membership). Reuses ListingStatus since
+// the same PENDING/APPROVED/REJECTED workflow applies here too.
+model Member {
+  id          String        @id @default(cuid())
+  name        String
+  contactInfo String
+  reason      String?
+  status      ListingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("members")
 }
 
 // Captured from the "Preferensi Akuisisi Anda" step (Saya Ingin Mengakuisisi
@@ -57,6 +108,9 @@ model BuyerLead {
   budgetRange          String
   categoriesOfInterest String[]
   contactInfo          String
+  // Recorded when the submitter is logged in; not required to submit.
+  userId               String?
+  user                 User?    @relation(fields: [userId], references: [id])
   createdAt            DateTime @default(now())
 
   @@map("buyer_leads")

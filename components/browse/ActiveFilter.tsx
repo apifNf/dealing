@@ -21,7 +21,7 @@ export function ActiveFilter({ labels }: ActiveFilterProps) {
       ))}
       <Link
         href="/browse"
-        className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-textMuted transition-colors hover:text-white"
+        className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-textMuted backdrop-blur-2xl transition-colors hover:text-white"
       >
         <X className="h-3 w-3" />
         Lihat Semua

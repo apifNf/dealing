@@ -14,12 +14,12 @@ export function SelectableCard({ id, label, description, icon, selected, inputPr
     <label
       htmlFor={id}
       className={`
-        group relative block cursor-pointer rounded-2xl border p-6 backdrop-blur-xl
+        group relative block cursor-pointer rounded-2xl border p-6 backdrop-blur-2xl
         transition-all duration-300
         ${
           selected
             ? "border-primary/60 bg-primary/[0.08] shadow-[0_0_30px_rgba(194,65,12,0.25)]"
-            : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+            : "border-white/10 bg-white/[0.015] hover:border-white/20 hover:bg-white/[0.03]"
         }
       `}
     >

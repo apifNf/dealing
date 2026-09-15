@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidContactInfo } from "./contact";
 
 export const ASSET_CATEGORIES = [
   {
@@ -186,12 +187,6 @@ export const SELLER_STEP_FIELDS = {
   upload: ["fileNames"],
 } as const satisfies Record<string, (keyof SellerFormValues)[]>;
 
-function isContactInfoValid(value: string) {
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  const isPhoneOrHandle = /^[+\d][\d\s-]{6,}$/.test(value);
-  return isEmail || isPhoneOrHandle;
-}
-
 export const buyerSchema = z
   .object({
     budgetRange: budgetRangeEnum,
@@ -199,7 +194,7 @@ export const buyerSchema = z
     contactInfo: z.string().min(5, "Masukkan email atau nomor WA/Telegram Anda"),
   })
   .superRefine((data, ctx) => {
-    if (!isContactInfoValid(data.contactInfo)) {
+    if (!isValidContactInfo(data.contactInfo)) {
       ctx.addIssue({
         code: "custom",
         message: "Masukkan email atau nomor WA/Telegram yang valid",

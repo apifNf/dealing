@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { sellerSchema, buyerSchema } from "@/lib/validations/onboarding";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUserId } from "@/lib/currentUser";
 
 export type OnboardingResult =
   | { status: "success"; message: string }
@@ -74,6 +75,7 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
   // succeed before we report success — a failed webhook afterwards shouldn't
   // undo or hide a submission that was already safely persisted.
   try {
+    const userId = await getCurrentUserId();
     await prisma.listing.create({
       data: {
         category: rest.category,
@@ -87,6 +89,7 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
         reasonForSelling: rest.reasonForSelling,
         fileNames: rest.fileNames ?? [],
         ...numericFields,
+        ...(userId ? { userId } : {}),
       },
     });
   } catch (error) {
@@ -129,11 +132,13 @@ export async function submitBuyerInterest(formData: FormData): Promise<Onboardin
   // and must succeed before we redirect — a failed webhook afterwards
   // shouldn't lose a lead that was already safely captured.
   try {
+    const userId = await getCurrentUserId();
     await prisma.buyerLead.create({
       data: {
         budgetRange: parsed.data.budgetRange,
         categoriesOfInterest: parsed.data.categoriesOfInterest,
         contactInfo: parsed.data.contactInfo,
+        ...(userId ? { userId } : {}),
       },
     });
   } catch (error) {

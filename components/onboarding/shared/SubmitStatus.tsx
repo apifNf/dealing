@@ -10,7 +10,7 @@ export function SubmitStatus({ status, message }: SubmitStatusProps) {
   return (
     <div
       role="status"
-      className={`flex items-start gap-3 rounded-2xl border p-4 text-sm backdrop-blur-xl ${
+      className={`flex items-start gap-3 rounded-2xl border p-4 text-sm backdrop-blur-2xl ${
         isSuccess
           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
           : "border-red-500/30 bg-red-500/10 text-red-300"

@@ -15,7 +15,7 @@ export function ListingCard({ listing }: { listing: PublicListing }) {
   const Icon = CATEGORY_ICONS[listing.category] ?? Code2;
 
   return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-surfaceGlass p-8 backdrop-blur-xl transition-all duration-500 hover:border-primary/40 hover:bg-white/[0.04]">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-surfaceGlass p-8 backdrop-blur-2xl transition-all duration-500 hover:border-primary/40 hover:bg-white/[0.05]">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
       <div className="relative flex flex-col gap-4">
         <div className="flex items-center justify-between">
@@ -23,7 +23,7 @@ export function ListingCard({ listing }: { listing: PublicListing }) {
             <Icon className="h-5 w-5" />
           </div>
           {listing.revenueRange && (
-            <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-textMain">
+            <span className="rounded-full border border-white/10 bg-white/[0.02] px-3 py-1 text-xs font-medium text-textMain">
               {listing.revenueRange}/bln
             </span>
           )}
@@ -35,7 +35,7 @@ export function ListingCard({ listing }: { listing: PublicListing }) {
       </div>
       <Link
         href="/onboarding?intent=buy"
-        className="relative mt-6 flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-3 text-sm font-semibold text-white transition-all hover:border-primary/50 hover:bg-primary/10"
+        className="relative mt-6 flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.02] py-3 text-sm font-semibold text-white transition-all hover:border-primary/50 hover:bg-primary/10"
       >
         Saya Tertarik
         <ArrowUpRight className="h-4 w-4" />

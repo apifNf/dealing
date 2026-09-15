@@ -22,7 +22,7 @@ export function UploadPhase({ form, files, onFilesChange }: UploadPhaseProps) {
     <div className="flex flex-col gap-4">
       <DropzoneUpload value={files} onChange={handleChange} />
       <p className="text-xs text-textMuted">
-        Opsional, namun listing dengan bukti analytics memiliki tingkat konversi jauh lebih tinggi.
+        Opsional, tapi sangat disarankan — bukti data membantu calon pembeli menilai bisnis Anda lebih cepat.
       </p>
     </div>
   );

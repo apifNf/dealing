@@ -43,12 +43,13 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       <div className="px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-6 w-fit rounded-full border border-white/10 bg-surfaceGlass px-5 py-2 text-xs font-medium text-primary backdrop-blur-xl">
-              Verified Deal Flow
+            <div className="mx-auto mb-6 w-fit rounded-full border border-white/10 bg-surfaceGlass px-5 py-2 text-xs font-medium text-primary backdrop-blur-2xl">
+              Listing Melalui Review Admin
             </div>
             <h1 className="font-serif text-4xl leading-[1.1] text-white sm:text-5xl">Jelajahi Listing</h1>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-textMuted sm:text-base">
-              Aset digital yang sudah melewati kurasi tim DEALING dan siap untuk diakuisisi.
+              Setiap listing di sini sudah melalui proses review admin sebelum tayang — bukan listing bebas
+              tanpa verifikasi seperti marketplace pada umumnya.
             </p>
           </div>
 
