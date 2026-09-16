@@ -25,8 +25,9 @@ export async function sendResetEmail(email: string, resetUrl: string): Promise<v
   }
 
   const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send({
-    from: "DEALING <onboarding@resend.dev>",
+  const fromAddress = process.env.EMAIL_FROM ?? "onboarding@resend.dev";
+  const { data, error } = await resend.emails.send({
+    from: `DEALING <${fromAddress}>`,
     to: email,
     subject: "Reset Password DEALING",
     html: `
@@ -39,4 +40,6 @@ export async function sendResetEmail(email: string, resetUrl: string): Promise<v
   if (error) {
     throw new Error(`Resend failed to send reset email: ${error.message}`);
   }
+
+  console.log(`[password-reset] sent via Resend to ${email}, message id: ${data?.id}`);
 }
