@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ClipboardCheck, FileCheck2, ListChecks, Search } from 'lucide-react';
 import { PageBackground } from '@/components/shared/PageBackground';
+import { FaqSection } from '@/components/home/FaqSection';
 
 const GENERAL_BENEFITS = [
   {
@@ -11,6 +12,18 @@ const GENERAL_BENEFITS = [
   },
   {
     number: '02',
+    title: 'Fee Transparan',
+    description:
+      'Kami hanya mengenakan success fee 8% saat transaksi berhasil closing — tidak ada biaya listing di muka, tidak ada biaya tersembunyi.',
+  },
+  {
+    number: '03',
+    title: 'Anda Tetap Pegang Kendali',
+    description:
+      'Saat ini, negosiasi harga dan transfer dana dilakukan langsung antar pembeli dan penjual melalui chat room yang sudah di sediakan oleh pihak DEALING yang aman — bukan lewat pihak ketiga yang menahan dana Anda. Kami sedang mengembangkan opsi escrow untuk keamanan tambahan ke depannya.',
+  },
+  {
+    number: '04',
     title: 'Estimasi Valuasi Awal',
     description:
       'Dapatkan estimasi valuasi berbasis multiplier revenue bulanan sebagai titik awal diskusi harga — panduan awal, bukan angka pasti dari data pasar real-time.',
@@ -193,6 +206,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <FaqSection />
 
     </PageBackground>
   );
