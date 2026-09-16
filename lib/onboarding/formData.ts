@@ -3,6 +3,7 @@ import type { BuyerFormValues, SellerFormValues } from "@/lib/validations/onboar
 export function buildSellerFormData(data: SellerFormValues): FormData {
   const formData = new FormData();
   formData.set("category", data.category);
+  formData.set("contactInfo", data.contactInfo);
   if (data.repositoryLink) formData.set("repositoryLink", data.repositoryLink);
   if (data.mrr) formData.set("mrr", data.mrr);
   if (data.techStack) formData.set("techStack", data.techStack);

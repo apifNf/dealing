@@ -7,6 +7,26 @@ type DetailsPhaseProps = {
   form: UseFormReturn<SellerFormValues>;
 };
 
+function ContactInfoField({ form }: DetailsPhaseProps) {
+  const { register, formState } = form;
+  return (
+    <GlassField
+      label="Kontak (Email / WA / Telegram)"
+      htmlFor="contactInfo"
+      error={formState.errors.contactInfo?.message}
+      hint="Dipakai untuk menghubungkan Anda dengan calon pembeli lewat chat room in-app"
+    >
+      <GlassInput
+        id="contactInfo"
+        type="text"
+        placeholder="nama@email.com atau +62812xxxxxxx"
+        invalid={!!formState.errors.contactInfo}
+        {...register("contactInfo")}
+      />
+    </GlassField>
+  );
+}
+
 export function DetailsPhase({ form }: DetailsPhaseProps) {
   const { register, watch, formState } = form;
   const category = watch("category");
@@ -15,6 +35,7 @@ export function DetailsPhase({ form }: DetailsPhaseProps) {
   if (category === "saas") {
     return (
       <div className="flex flex-col gap-5">
+        <ContactInfoField form={form} />
         <GlassField label="Repository Link" htmlFor="repositoryLink" error={errors.repositoryLink?.message}>
           <GlassInput
             id="repositoryLink"
@@ -51,6 +72,7 @@ export function DetailsPhase({ form }: DetailsPhaseProps) {
     const isContent = category === "content";
     return (
       <div className="flex flex-col gap-5">
+        <ContactInfoField form={form} />
         <GlassField label={isContent ? "Channel URL" : "Website URL"} htmlFor="assetUrl" error={errors.assetUrl?.message}>
           <GlassInput
             id="assetUrl"
@@ -116,6 +138,7 @@ export function DetailsPhase({ form }: DetailsPhaseProps) {
   if (category === "newsletter") {
     return (
       <div className="flex flex-col gap-5">
+        <ContactInfoField form={form} />
         <GlassField
           label="Nama Platform"
           htmlFor="platformName"
@@ -183,6 +206,7 @@ export function DetailsPhase({ form }: DetailsPhaseProps) {
   if (category === "ecommerce") {
     return (
       <div className="flex flex-col gap-5">
+        <ContactInfoField form={form} />
         <GlassField label="Nama Toko" htmlFor="storeName" error={errors.storeName?.message}>
           <GlassInput
             id="storeName"

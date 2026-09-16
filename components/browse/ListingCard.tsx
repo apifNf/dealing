@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Code2, Globe, Mail, ShoppingBag, Video } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { PublicListing } from "@/lib/browse/publicListing";
+import { AjukanDiskusiButton } from "./AjukanDiskusiButton";
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   content: Video,
@@ -11,7 +12,12 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   ecommerce: ShoppingBag,
 };
 
-export function ListingCard({ listing }: { listing: PublicListing }) {
+type ListingCardProps = {
+  listing: PublicListing;
+  isLoggedIn: boolean;
+};
+
+export function ListingCard({ listing, isLoggedIn }: ListingCardProps) {
   const Icon = CATEGORY_ICONS[listing.category] ?? Code2;
 
   return (
@@ -40,6 +46,7 @@ export function ListingCard({ listing }: { listing: PublicListing }) {
         Saya Tertarik
         <ArrowUpRight className="h-4 w-4" />
       </Link>
+      {isLoggedIn && <AjukanDiskusiButton listingId={listing.id} hasSeller={listing.hasSeller} />}
     </div>
   );
 }

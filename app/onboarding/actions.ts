@@ -36,6 +36,7 @@ async function postToWebhook(url: string | undefined, payload: Record<string, un
 export async function submitSellerListing(formData: FormData): Promise<OnboardingResult> {
   const parsed = sellerSchema.safeParse({
     category: formData.get("category") || undefined,
+    contactInfo: formData.get("contactInfo") || undefined,
     repositoryLink: formData.get("repositoryLink") || undefined,
     mrr: formData.get("mrr") || undefined,
     techStack: formData.get("techStack") || undefined,
@@ -79,6 +80,7 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
     await prisma.listing.create({
       data: {
         category: rest.category,
+        contactInfo: rest.contactInfo,
         repositoryLink: rest.repositoryLink,
         techStack: rest.techStack,
         assetUrl: rest.assetUrl,

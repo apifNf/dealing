@@ -54,6 +54,7 @@ export function ListingsTable({ listings }: ListingsTableProps) {
           <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-textMuted">
             <th className="px-6 py-4 font-medium">Kategori</th>
             <th className="px-6 py-4 font-medium">Detail</th>
+            <th className="px-6 py-4 font-medium">Kontak</th>
             <th className="px-6 py-4 font-medium">MRR / Revenue</th>
             <th className="px-6 py-4 font-medium">Dokumen</th>
             <th className="px-6 py-4 font-medium">Dikirim</th>
@@ -72,6 +73,9 @@ export function ListingsTable({ listings }: ListingsTableProps) {
                 <td className="px-6 py-4 text-textMain">{CATEGORY_LABELS[listing.category] ?? listing.category}</td>
                 <td className="max-w-[240px] truncate px-6 py-4 text-textMuted" title={detail}>
                   {detail}
+                </td>
+                <td className="max-w-[160px] truncate px-6 py-4 text-textMuted" title={listing.contactInfo ?? undefined}>
+                  {listing.contactInfo ?? "-"}
                 </td>
                 <td className="px-6 py-4 text-textMain">{formatRupiah(revenue)}</td>
                 <td className="px-6 py-4 text-textMuted">

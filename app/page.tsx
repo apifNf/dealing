@@ -67,17 +67,17 @@ export default function Home() {
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-normal tracking-tight mb-8 text-white leading-[1.1]">
-            Platform Terpercaya untuk <br />
-            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-primary to-amber-600 pr-4">
-              Aset Digital
-            </span> <br />
-            di Indonesia.
+            Ubah Aset Intelektual <br />
+            Menjadi{" "}
+            <span className="inline-block italic text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-primary to-amber-600 pr-4">
+              Valuasi yang Nyata.
+            </span>
           </h1>
 
           <p className="text-base md:text-lg text-textMuted mb-12 max-w-2xl leading-relaxed">
-            DEALING mempertemukan penjual dan pembeli aset digital — Content Account, Website/Media, SaaS,
-            Newsletter & Komunitas, hingga E-Commerce — lewat proses yang transparan dan listing yang melalui
-            review admin sebelum tayang.
+            DEALING adalah platform untuk M&A aset digital di Indonesia. Kami mempertemukan penjual dan pembeli
+            aset digital—Content Account, Website/Media, SaaS, Newsletter & Komunitas, hingga E-Commerce—lewat
+            proses yang transparan dan listing terverifikasi.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">

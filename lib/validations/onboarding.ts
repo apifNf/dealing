@@ -71,6 +71,9 @@ function isValidNonNegativeNumber(value: string | undefined) {
 export const sellerSchema = z
   .object({
     category: assetCategoryEnum,
+    // Required regardless of category — how the admin/buyer chat flow
+    // eventually reaches the seller. See DetailsPhase.tsx.
+    contactInfo: z.string().min(5, "Masukkan email atau nomor WA/Telegram Anda"),
     // Phase 2 — SaaS / Micro-Tools
     repositoryLink: z.string().optional(),
     mrr: z.string().optional(),
@@ -94,6 +97,14 @@ export const sellerSchema = z
     fileNames: z.array(z.string()).optional(),
   })
   .superRefine((data, ctx) => {
+    if (!isValidContactInfo(data.contactInfo)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Masukkan email atau nomor WA/Telegram yang valid",
+        path: ["contactInfo"],
+      });
+    }
+
     const requireText = (
       value: string | undefined,
       field: "repositoryLink" | "techStack" | "assetUrl" | "avgWatchTime" | "platformName" | "niche" | "storeName" | "reasonForSelling",
@@ -169,6 +180,7 @@ export type SellerFormValues = z.infer<typeof sellerSchema>;
 export const SELLER_STEP_FIELDS = {
   category: ["category"],
   details: [
+    "contactInfo",
     "repositoryLink",
     "mrr",
     "techStack",

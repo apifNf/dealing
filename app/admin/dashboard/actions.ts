@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { ListingStatus } from "@/generated/prisma/client";
+import { ListingStatus, ChatRoomStatus } from "@/generated/prisma/client";
 import { notifyMatchesForListing } from "@/lib/gatekeeper/notify";
 import { postOpsNotification } from "@/lib/ops/notify";
 import { ASSET_CATEGORIES } from "@/lib/validations/onboarding";
@@ -78,5 +78,15 @@ export async function shareListingToMembership(listingId: string) {
   // "DB is the source of truth, notification is best-effort" pattern used
   // everywhere else in this app.
   await prisma.listing.update({ where: { id: listingId }, data: { sharedToMembershipAt: new Date() } });
+  revalidatePath("/admin/dashboard");
+}
+
+export async function approveChatRoom(id: string) {
+  await prisma.chatRoom.update({ where: { id }, data: { status: ChatRoomStatus.ACTIVE } });
+  revalidatePath("/admin/dashboard");
+}
+
+export async function rejectChatRoom(id: string) {
+  await prisma.chatRoom.update({ where: { id }, data: { status: ChatRoomStatus.REJECTED } });
   revalidatePath("/admin/dashboard");
 }

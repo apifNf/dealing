@@ -14,6 +14,10 @@ export type PublicListing = {
   detail: string;
   revenueRange: string | null;
   postedAt: Date;
+  /** Whether the listing has a seller User account — required for the
+   * in-app chat request flow (listings submitted before auth existed
+   * don't have one). See components/browse/AjukanDiskusiButton.tsx. */
+  hasSeller: boolean;
 };
 
 function formatRevenueRange(value: number | null): string | null {
@@ -66,5 +70,6 @@ export function toPublicListing(listing: Listing): PublicListing {
     detail: buildDetail(listing),
     revenueRange: formatRevenueRange(revenue),
     postedAt: listing.createdAt,
+    hasSeller: listing.userId !== null,
   };
 }

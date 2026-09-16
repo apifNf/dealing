@@ -4,6 +4,7 @@ import { ListingCard } from "@/components/browse/ListingCard";
 import { EmptyState } from "@/components/browse/EmptyState";
 import { ActiveFilter } from "@/components/browse/ActiveFilter";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUserId } from "@/lib/currentUser";
 import { toPublicListing } from "@/lib/browse/publicListing";
 import { ASSET_CATEGORIES, assetCategoryEnum, type AssetCategory } from "@/lib/validations/onboarding";
 
@@ -34,6 +35,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   });
 
   const publicListings = listings.map(toPublicListing);
+  const isLoggedIn = (await getCurrentUserId()) !== null;
   const activeLabels = activeCategories.map(
     (value) => ASSET_CATEGORIES.find((category) => category.value === value)?.label ?? value
   );
@@ -60,7 +62,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {publicListings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
+                <ListingCard key={listing.id} listing={listing} isLoggedIn={isLoggedIn} />
               ))}
             </div>
           )}

@@ -26,9 +26,13 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
-  resetTokens PasswordResetToken[]
-  listings    Listing[]
-  buyerLeads  BuyerLead[]
+  resetTokens     PasswordResetToken[]
+  listings        Listing[]
+  buyerLeads      BuyerLead[]
+  ndaAcceptances  NdaAcceptance[]
+  chatRoomsBuying ChatRoom[]           @relation("ChatRoomBuyer")
+  chatRoomsSelling ChatRoom[]          @relation("ChatRoomSeller")
+  chatMessages    ChatMessage[]
 
   @@map("users")
 }
@@ -71,6 +75,10 @@ model Listing {
   storeName            String?
   skuCount             Float?
   reasonForSelling     String?
+  // Required (enforced in lib/validations/onboarding.ts) for every new
+  // submission — nullable here only because listings submitted before this
+  // field existed have no value to backfill.
+  contactInfo          String?
   fileNames            String[]      @default([])
   status               ListingStatus @default(PENDING)
   // Set when an admin clicks "Share ke Membership" — a deliberate, manual,
@@ -82,6 +90,9 @@ model Listing {
   user                 User?         @relation(fields: [userId], references: [id])
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
+
+  ndaAcceptances NdaAcceptance[]
+  chatRooms      ChatRoom[]
 
   @@map("listings")
 }
@@ -127,4 +138,64 @@ model MatchNotification {
 
   @@unique([listingId, buyerLeadId])
   @@map("match_notifications")
+}
+
+// Click-to-accept NDA, recorded per (listing, buyer) — a buyer must accept
+// again for each different listing they want to discuss (see lib/nda.ts for
+// the displayed text). Required before a ChatRoom can be requested.
+model NdaAcceptance {
+  id         String   @id @default(cuid())
+  listingId  String
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  acceptedAt DateTime @default(now())
+  ipAddress  String?
+
+  @@unique([listingId, userId])
+  @@map("nda_acceptances")
+}
+
+enum ChatRoomStatus {
+  REQUESTED
+  ACTIVE
+  REJECTED
+  CLOSED
+}
+
+// One in-app chat thread between a buyer and a listing's seller. Created as
+// REQUESTED when a buyer asks to discuss a listing (after accepting the
+// NDA); an admin must approve it to ACTIVE before either side can message —
+// see app/admin/dashboard/actions.ts and app/chat/[roomId].
+model ChatRoom {
+  id           String         @id @default(cuid())
+  listingId    String
+  listing      Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerUserId  String
+  buyer        User           @relation("ChatRoomBuyer", fields: [buyerUserId], references: [id], onDelete: Cascade)
+  sellerUserId String
+  seller       User           @relation("ChatRoomSeller", fields: [sellerUserId], references: [id], onDelete: Cascade)
+  status       ChatRoomStatus @default(REQUESTED)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  messages ChatMessage[]
+
+  @@map("chat_rooms")
+}
+
+model ChatMessage {
+  id           String   @id @default(cuid())
+  chatRoomId   String
+  chatRoom     ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  senderUserId String
+  sender       User     @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
+  content      String
+  // Best-effort heuristic flag (see lib/chat/moderation.ts) when a message
+  // looks like it's sharing off-platform contact info — surfaced to admin
+  // monitoring, not auto-enforced.
+  flagged      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@map("chat_messages")
 }

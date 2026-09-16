@@ -37,6 +37,7 @@ export function SellerWizard({ onExit }: SellerWizardProps) {
     mode: "onTouched",
     defaultValues: {
       category: "" as SellerFormValues["category"],
+      contactInfo: "",
       repositoryLink: "",
       mrr: undefined,
       techStack: "",
