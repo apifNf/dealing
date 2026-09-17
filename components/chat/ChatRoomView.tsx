@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Eye, Loader2, Send, ShieldAlert } from "lucide-react";
 import type { ChatRoomStatus } from "@/generated/prisma/client";
+import { useHasMounted } from "@/lib/hooks/useHasMounted";
 
 type ChatMessageView = {
   id: string;
@@ -67,6 +68,7 @@ export function ChatRoomView({
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const canSend = (role === "buyer" || role === "seller") && status === "ACTIVE";
+  const mounted = useHasMounted();
 
   useEffect(() => {
     if (status !== "ACTIVE") return;
@@ -100,9 +102,10 @@ export function ChatRoomView({
   }, [messages]);
 
   const headerLabel = useMemo(() => {
+    if (!mounted) return "Diskusi";
     if (role === "admin") return `Monitoring: ${buyerEmail} ↔ ${sellerEmail}`;
     return counterpartEmail ? `Diskusi dengan ${counterpartEmail}` : "Diskusi";
-  }, [role, counterpartEmail, buyerEmail, sellerEmail]);
+  }, [mounted, role, counterpartEmail, buyerEmail, sellerEmail]);
 
   const handleSend = () => {
     const content = draft.trim();
@@ -174,7 +177,13 @@ export function ChatRoomView({
         {messages.map((message) => {
           const isMine = role !== "admin" && message.senderUserId === currentUserId;
           const isFromBuyer = message.senderUserId === buyerUserId;
-          const adminSenderLabel = isFromBuyer ? `Buyer · ${buyerEmail}` : `Seller · ${sellerEmail}`;
+          const adminSenderLabel = mounted
+            ? isFromBuyer
+              ? `Buyer · ${buyerEmail}`
+              : `Seller · ${sellerEmail}`
+            : isFromBuyer
+              ? "Buyer"
+              : "Seller";
 
           return (
             <div key={message.id} className={`flex flex-col ${isMine ? "items-end" : "items-start"}`}>

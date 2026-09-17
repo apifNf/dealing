@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageBackground } from "@/components/shared/PageBackground";
+import { ContactEmailLink } from "@/components/shared/ContactEmail";
 
 // ============================================================================
 // INTERNAL NOTE (not shown to users): This is a FIRST DRAFT of the Terms of
@@ -136,10 +137,7 @@ export default function TermsPage() {
               <p>
                 Ketentuan ini diatur oleh dan ditafsirkan sesuai dengan hukum Republik Indonesia. Pertanyaan
                 mengenai Ketentuan ini dapat dikirimkan ke{" "}
-                <a href="mailto:atechlabshello@gmail.com" className="text-primary hover:underline">
-                  atechlabshello@gmail.com
-                </a>
-                .
+                <ContactEmailLink className="text-primary hover:underline" />.
               </p>
             </Section>
           </div>

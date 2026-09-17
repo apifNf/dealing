@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageBackground } from "@/components/shared/PageBackground";
+import { ContactEmailLink } from "@/components/shared/ContactEmail";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | DEALING",
@@ -112,10 +113,7 @@ export default function PrivacyPage() {
             <Section title="7. Kontak">
               <p>
                 Pertanyaan mengenai Kebijakan Privasi ini dapat dikirimkan ke{" "}
-                <a href="mailto:atechlabshello@gmail.com" className="text-primary hover:underline">
-                  atechlabshello@gmail.com
-                </a>
-                .
+                <ContactEmailLink className="text-primary hover:underline" />.
               </p>
             </Section>
           </div>

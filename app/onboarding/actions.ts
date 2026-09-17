@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import { sellerSchema, buyerSchema } from "@/lib/validations/onboarding";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserId } from "@/lib/currentUser";
+import { getClientIp } from "@/lib/requestIp";
+import { rateLimitMessage } from "@/lib/rateLimit";
+
+const SUBMIT_RATE_LIMIT = 10;
+const SUBMIT_RATE_WINDOW_MS = 60 * 60 * 1000;
 
 export type OnboardingResult =
   | { status: "success"; message: string }
@@ -34,6 +39,12 @@ async function postToWebhook(url: string | undefined, payload: Record<string, un
 }
 
 export async function submitSellerListing(formData: FormData): Promise<OnboardingResult> {
+  const ip = await getClientIp();
+  const limitMessage = rateLimitMessage(`onboarding-seller:${ip}`, SUBMIT_RATE_LIMIT, SUBMIT_RATE_WINDOW_MS);
+  if (limitMessage) {
+    return { status: "error", message: limitMessage };
+  }
+
   const parsed = sellerSchema.safeParse({
     category: formData.get("category") || undefined,
     contactInfo: formData.get("contactInfo") || undefined,
@@ -116,6 +127,12 @@ export async function submitSellerListing(formData: FormData): Promise<Onboardin
 }
 
 export async function submitBuyerInterest(formData: FormData): Promise<OnboardingResult> {
+  const ip = await getClientIp();
+  const limitMessage = rateLimitMessage(`onboarding-buyer:${ip}`, SUBMIT_RATE_LIMIT, SUBMIT_RATE_WINDOW_MS);
+  if (limitMessage) {
+    return { status: "error", message: limitMessage };
+  }
+
   const parsed = buyerSchema.safeParse({
     budgetRange: formData.get("budgetRange") || undefined,
     categoriesOfInterest: formData.getAll("categoriesOfInterest").map(String),

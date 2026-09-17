@@ -6,6 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validations/auth";
 import { verifyPassword } from "@/lib/password";
 import { createSessionToken, USER_SESSION_COOKIE, USER_SESSION_MAX_AGE_SECONDS } from "@/lib/userAuth";
+import { getClientIp } from "@/lib/requestIp";
+import { rateLimitMessage } from "@/lib/rateLimit";
+
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 15 * 60 * 1000;
 
 export type LoginResult = {
   status: "error";
@@ -20,6 +25,12 @@ function safeNext(next: FormDataEntryValue | null): string {
 }
 
 export async function loginUser(formData: FormData): Promise<LoginResult> {
+  const ip = await getClientIp();
+  const limitMessage = rateLimitMessage(`login:${ip}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (limitMessage) {
+    return { status: "error", message: limitMessage };
+  }
+
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),

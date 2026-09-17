@@ -4,12 +4,23 @@ import { prisma } from "@/lib/prisma";
 import { forgotPasswordSchema } from "@/lib/validations/auth";
 import { createPasswordResetToken } from "@/lib/passwordReset";
 import { sendResetEmail } from "@/lib/email/sendResetEmail";
+import { getClientIp } from "@/lib/requestIp";
+import { rateLimitMessage } from "@/lib/rateLimit";
+
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 15 * 60 * 1000;
 
 export type ForgotPasswordResult =
   | { status: "success"; message: string }
   | { status: "error"; message: string; fieldErrors?: Record<string, string[]> };
 
 export async function requestPasswordReset(formData: FormData): Promise<ForgotPasswordResult> {
+  const ip = await getClientIp();
+  const limitMessage = rateLimitMessage(`forgot-password:${ip}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (limitMessage) {
+    return { status: "error", message: limitMessage };
+  }
+
   const parsed = forgotPasswordSchema.safeParse({ email: formData.get("email") });
 
   if (!parsed.success) {

@@ -1,8 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail } from "lucide-react";
-
-const CONTACT_EMAIL = "atechlabshello@gmail.com";
+import { ContactEmailLink } from "@/components/shared/ContactEmail";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -26,13 +24,10 @@ export function Footer() {
 
           <div className="flex flex-col gap-3">
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Kontak Resmi</h3>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
+            <ContactEmailLink
+              showIcon
               className="flex items-center gap-2 text-sm text-textMuted transition-colors hover:text-textMain"
-            >
-              <Mail className="h-4 w-4" />
-              {CONTACT_EMAIL}
-            </a>
+            />
           </div>
 
           <div className="flex flex-col gap-3">

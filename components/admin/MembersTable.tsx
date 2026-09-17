@@ -5,6 +5,7 @@ import { Check, Loader2, X } from "lucide-react";
 import type { Member } from "@/generated/prisma/client";
 import { approveMember, rejectMember } from "@/app/admin/dashboard/actions";
 import { StatusBadge } from "./StatusBadge";
+import { useHasMounted } from "@/lib/hooks/useHasMounted";
 
 function formatDate(value: Date) {
   return new Date(value).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
@@ -17,6 +18,7 @@ type MembersTableProps = {
 export function MembersTable({ members }: MembersTableProps) {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const mounted = useHasMounted();
 
   const handleAction = (id: string, action: (id: string) => Promise<void>) => {
     setPendingId(id);
@@ -55,7 +57,7 @@ export function MembersTable({ members }: MembersTableProps) {
               <tr key={member.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
                 <td className="px-6 py-4 text-textMain">{member.name}</td>
                 <td className="max-w-[200px] truncate px-6 py-4 text-textMuted" title={member.contactInfo}>
-                  {member.contactInfo}
+                  {mounted ? member.contactInfo : "···"}
                 </td>
                 <td className="max-w-[240px] truncate px-6 py-4 text-textMuted" title={member.reason ?? undefined}>
                   {member.reason || "-"}

@@ -6,6 +6,7 @@ import { Check, Eye, Loader2, X } from "lucide-react";
 import type { ChatRoom, ChatRoomStatus, Listing, User } from "@/generated/prisma/client";
 import { approveChatRoom, rejectChatRoom } from "@/app/admin/dashboard/actions";
 import { ASSET_CATEGORIES } from "@/lib/validations/onboarding";
+import { useHasMounted } from "@/lib/hooks/useHasMounted";
 
 const STATUS_STYLES: Record<ChatRoomStatus, string> = {
   REQUESTED: "border-amber-500/30 bg-amber-500/10 text-amber-300",
@@ -39,6 +40,7 @@ type ChatRoomsTableProps = {
 export function ChatRoomsTable({ rooms }: ChatRoomsTableProps) {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const mounted = useHasMounted();
 
   const handleAction = (id: string, action: (id: string) => Promise<void>) => {
     setPendingId(id);
@@ -79,10 +81,10 @@ export function ChatRoomsTable({ rooms }: ChatRoomsTableProps) {
               <tr key={room.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
                 <td className="px-6 py-4 text-textMain">{categoryLabel}</td>
                 <td className="max-w-[180px] truncate px-6 py-4 text-textMuted" title={room.buyer.email}>
-                  {room.buyer.email}
+                  {mounted ? room.buyer.email : "···"}
                 </td>
                 <td className="max-w-[180px] truncate px-6 py-4 text-textMuted" title={room.seller.email}>
-                  {room.seller.email}
+                  {mounted ? room.seller.email : "···"}
                 </td>
                 <td className="px-6 py-4 text-textMuted">{room._count.messages}</td>
                 <td className="px-6 py-4 text-textMuted">{formatDate(room.createdAt)}</td>

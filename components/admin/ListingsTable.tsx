@@ -5,6 +5,7 @@ import { Check, Loader2, Megaphone, X } from "lucide-react";
 import type { Listing } from "@/generated/prisma/client";
 import { approveListing, rejectListing, shareListingToMembership } from "@/app/admin/dashboard/actions";
 import { StatusBadge } from "./StatusBadge";
+import { useHasMounted } from "@/lib/hooks/useHasMounted";
 
 const CATEGORY_LABELS: Record<string, string> = {
   content: "Content Account",
@@ -30,6 +31,7 @@ type ListingsTableProps = {
 export function ListingsTable({ listings }: ListingsTableProps) {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const mounted = useHasMounted();
 
   const handleAction = (id: string, action: (id: string) => Promise<void>) => {
     setPendingId(id);
@@ -75,7 +77,7 @@ export function ListingsTable({ listings }: ListingsTableProps) {
                   {detail}
                 </td>
                 <td className="max-w-[160px] truncate px-6 py-4 text-textMuted" title={listing.contactInfo ?? undefined}>
-                  {listing.contactInfo ?? "-"}
+                  {mounted ? (listing.contactInfo ?? "-") : "···"}
                 </td>
                 <td className="px-6 py-4 text-textMain">{formatRupiah(revenue)}</td>
                 <td className="px-6 py-4 text-textMuted">
