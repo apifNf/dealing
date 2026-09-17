@@ -26,13 +26,14 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
-  resetTokens     PasswordResetToken[]
-  listings        Listing[]
-  buyerLeads      BuyerLead[]
-  ndaAcceptances  NdaAcceptance[]
-  chatRoomsBuying ChatRoom[]           @relation("ChatRoomBuyer")
-  chatRoomsSelling ChatRoom[]          @relation("ChatRoomSeller")
-  chatMessages    ChatMessage[]
+  resetTokens      PasswordResetToken[]
+  listings         Listing[]
+  buyerLeads       BuyerLead[]
+  ndaAcceptances   NdaAcceptance[]
+  chatRoomsBuying  ChatRoom[]           @relation("ChatRoomBuyer")
+  chatRoomsSelling ChatRoom[]           @relation("ChatRoomSeller")
+  chatMessages     ChatMessage[]
+  supportChatLogs  SupportChatLog[]
 
   @@map("users")
 }
@@ -198,4 +199,20 @@ model ChatMessage {
   createdAt    DateTime @default(now())
 
   @@map("chat_messages")
+}
+
+// One row per exchange with the public support chatbot (see
+// app/api/chat/support/route.ts) — kept for admin quality review, same
+// monitoring rationale as ChatMessage. userId is optional since the widget
+// is available to logged-out visitors too.
+model SupportChatLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  ipAddress   String?
+  userMessage String
+  botReply    String
+  createdAt   DateTime @default(now())
+
+  @@map("support_chat_logs")
 }

@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { SupportChatWidget } from "@/components/support/SupportChatWidget";
 import { getCurrentUserId } from "@/lib/currentUser";
 import { prisma } from "@/lib/prisma";
 
@@ -30,6 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Navbar user={user} />
         <div className="pt-20">{children}</div>
         <Footer />
+        <SupportChatWidget />
       </body>
     </html>
   );
