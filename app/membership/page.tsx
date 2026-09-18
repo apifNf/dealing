@@ -17,8 +17,9 @@ export default function MembershipPage() {
           </div>
           <h1 className="font-serif text-2xl text-white sm:text-3xl">Daftar Jadi Member</h1>
           <p className="mt-3 text-sm leading-relaxed text-textMuted">
-            Aplikasi Anda akan ditinjau oleh tim kami. Setelah disetujui, Anda akan mendapat info listing
-            pilihan lebih dulu sebelum ramai ditemukan lewat Browse.
+            Aplikasi Anda akan ditinjau oleh tim kami. Setelah disetujui, Anda akan menerima instruksi
+            pembayaran — begitu pembayaran dikonfirmasi, Anda akan di-invite ke Channel WhatsApp internal
+            DEALING dan mulai mendapat info listing pilihan lebih dulu, sebelum ramai ditemukan lewat Browse.
           </p>
         </div>
         <MembershipForm />

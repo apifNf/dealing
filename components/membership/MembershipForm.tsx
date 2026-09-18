@@ -4,16 +4,18 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Send } from "lucide-react";
-import { membershipSchema, type MembershipFormValues } from "@/lib/validations/membership";
+import { membershipSchema, MEMBERSHIP_PLANS, type MembershipFormValues } from "@/lib/validations/membership";
 import { submitMembershipApplication, type MembershipResult } from "@/app/membership/actions";
 import { GlassField } from "@/components/onboarding/shared/fields/GlassField";
 import { GlassInput } from "@/components/onboarding/shared/fields/GlassInput";
+import { SelectableCard } from "@/components/onboarding/shared/fields/SelectableCard";
 import { SubmitStatus } from "@/components/onboarding/shared/SubmitStatus";
 
 function buildFormData(data: MembershipFormValues): FormData {
   const formData = new FormData();
   formData.set("name", data.name);
   formData.set("contactInfo", data.contactInfo);
+  formData.set("plan", data.plan);
   if (data.reason) formData.set("reason", data.reason);
   return formData;
 }
@@ -25,10 +27,11 @@ export function MembershipForm() {
   const form = useForm<MembershipFormValues>({
     resolver: zodResolver(membershipSchema),
     mode: "onTouched",
-    defaultValues: { name: "", contactInfo: "", reason: "" },
+    defaultValues: { name: "", contactInfo: "", reason: "", plan: "YEARLY" },
   });
 
-  const { register, formState } = form;
+  const { register, watch, formState } = form;
+  const selectedPlan = watch("plan");
 
   const onSubmit = form.handleSubmit((data) => {
     setResult(null);
@@ -40,19 +43,40 @@ export function MembershipForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-md flex-col gap-6">
+      <GlassField label="Pilih Paket" error={formState.errors.plan?.message}>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {MEMBERSHIP_PLANS.map((plan) => (
+            <div key={plan.value} className="relative">
+              {"savingsLabel" in plan && (
+                <span className="absolute -top-2.5 right-3 z-10 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-semibold text-white shadow-[0_0_12px_rgba(194,65,12,0.4)]">
+                  {plan.savingsLabel}
+                </span>
+              )}
+              <SelectableCard
+                id={`plan-${plan.value}`}
+                label={plan.label}
+                description={plan.priceLabel}
+                selected={selectedPlan === plan.value}
+                inputProps={{ ...register("plan"), value: plan.value }}
+              />
+            </div>
+          ))}
+        </div>
+      </GlassField>
+
       <GlassField label="Nama" htmlFor="name" error={formState.errors.name?.message}>
         <GlassInput id="name" type="text" placeholder="Nama lengkap Anda" invalid={!!formState.errors.name} {...register("name")} />
       </GlassField>
 
       <GlassField
-        label="Email atau Nomor WA/Telegram"
+        label="Nomor WhatsApp"
         htmlFor="contactInfo"
         error={formState.errors.contactInfo?.message}
       >
         <GlassInput
           id="contactInfo"
           type="text"
-          placeholder="nama@email.com atau +62812xxxxxxx"
+          placeholder="+62812xxxxxxx"
           invalid={!!formState.errors.contactInfo}
           {...register("contactInfo")}
         />

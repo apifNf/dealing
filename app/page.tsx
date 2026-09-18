@@ -35,7 +35,7 @@ const MEMBERSHIP_BENEFITS = [
     number: '01',
     title: 'Early Access Listing',
     description:
-      'Member yang lolos aplikasi dan approval tim kami akan mendapat info listing pilihan lebih dulu — dipilih langsung oleh admin, bukan otomatis untuk semua listing yang masuk.',
+      'Member yang lolos approval akan di-invite ke Channel WhatsApp internal kami — tempat listing pilihan di-share admin lebih dulu, sebelum tayang ramai di Browse. Bukan otomatis untuk semua listing yang masuk, dipilih langsung oleh tim.',
   },
   {
     number: '02',

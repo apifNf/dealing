@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { membershipSchema } from "@/lib/validations/membership";
+import { membershipSchema, getPlanMeta } from "@/lib/validations/membership";
 import { postOpsNotification } from "@/lib/ops/notify";
 
 export type MembershipResult =
@@ -13,6 +13,7 @@ export async function submitMembershipApplication(formData: FormData): Promise<M
     name: formData.get("name") || undefined,
     contactInfo: formData.get("contactInfo") || undefined,
     reason: formData.get("reason") || undefined,
+    plan: formData.get("plan") || undefined,
   });
 
   if (!parsed.success) {
@@ -23,12 +24,18 @@ export async function submitMembershipApplication(formData: FormData): Promise<M
     };
   }
 
+  // Price is looked up server-side from the plan value, never trusted from
+  // the client — this is what gets snapshotted onto priceSnapshot.
+  const planMeta = getPlanMeta(parsed.data.plan);
+
   // The DB row is the source of truth for the application; it must succeed
   // before we report success — a failed ops notification afterwards
   // shouldn't lose an application that was already safely captured.
   let member;
   try {
-    member = await prisma.member.create({ data: parsed.data });
+    member = await prisma.member.create({
+      data: { ...parsed.data, priceSnapshot: planMeta.price },
+    });
   } catch (error) {
     console.error("[membership] failed to save application:", error);
     return { status: "error", message: "Gagal menyimpan aplikasi. Silakan coba lagi." };
@@ -36,7 +43,7 @@ export async function submitMembershipApplication(formData: FormData): Promise<M
 
   try {
     await postOpsNotification(
-      `🆕 Aplikasi Membership Baru!\n\nNama: ${member.name}\nKontak: ${member.contactInfo}\nAlasan: ${member.reason ?? "-"}\n\nReview di /admin/dashboard`,
+      `🆕 Aplikasi Membership Baru!\n\nNama: ${member.name}\nKontak: ${member.contactInfo}\nPaket: ${planMeta.label} (${planMeta.priceLabel})\nAlasan: ${member.reason ?? "-"}\n\nReview di /admin/dashboard`,
       "membership-application"
     );
   } catch (error) {

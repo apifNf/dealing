@@ -98,14 +98,40 @@ model Listing {
   @@map("listings")
 }
 
-// Membership applications (see app/membership). Reuses ListingStatus since
-// the same PENDING/APPROVED/REJECTED workflow applies here too.
+enum MembershipPlan {
+  MONTHLY
+  YEARLY
+}
+
+// PendingPayment -> Active -> Expired. Distinct from Member.status (which
+// is the application review decision) — a member can be application-wise
+// APPROVED while still PendingPayment, and only counts for early-access
+// benefits once Active. See lib/validations/membership.ts for current
+// pricing and app/membership/payment/[id] for the (temporary, manual)
+// payment instructions this status pairs with.
+enum MemberPaymentStatus {
+  PendingPayment
+  Active
+  Expired
+}
+
+// Membership applications (see app/membership). Reuses ListingStatus for
+// the application-review PENDING/APPROVED/REJECTED workflow; payment is
+// tracked separately via paymentStatus below.
 model Member {
   id          String        @id @default(cuid())
   name        String
   contactInfo String
   reason      String?
   status      ListingStatus @default(PENDING)
+  plan        MembershipPlan @default(MONTHLY)
+  // Rupiah amount at the time this application was submitted (see
+  // MEMBERSHIP_PLANS) — snapshotted so a later price change never
+  // retroactively affects an application/subscription already in flight.
+  priceSnapshot Int
+  paymentStatus MemberPaymentStatus @default(PendingPayment)
+  paidAt        DateTime?
+  expiresAt     DateTime?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 

@@ -90,7 +90,7 @@ export default function PrivacyPage() {
                 Kami tidak menjual data pribadi Anda kepada pihak ketiga. Detail kontak Buyer/Seller hanya
                 dibagikan kepada pihak lawan transaksi yang relevan (misalnya, kontak Seller kepada Buyer yang
                 sudah disetujui admin untuk berdiskusi), atau kepada anggota Membership yang disetujui saat admin
-                membagikan listing tertentu ke grup membership.
+                membagikan listing tertentu ke Channel WhatsApp membership.
               </p>
             </Section>
 
